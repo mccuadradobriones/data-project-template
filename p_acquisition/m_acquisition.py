@@ -1,27 +1,71 @@
 import pandas as pd
 import requests
+from bs4 import BeautifulSoup
+import re
+from sqlalchemy import inspect, create_engine
+import sqlsoup
+
 
 #acquisition functions
+#Acquiring data from database
+def get_db(path):
+    print('Getting database')
+    engine = create_engine(f'sqlite:////{path}')
+    table_names = inspect(engine).get_table_names()
+    for i in table_names:
+        print(f'Loading table {i}')
+        if i == table_names[0]:
+            print(f'Transforming {i} to dataframe')
+            df = pd.read_sql_query(f'SELECT * FROM {i}', engine)
+        else:
+            print(f'Merging dataframe with {i}')
+            db_df = pd.read_sql_query(f'SELECT * FROM {i}', engine)
+            df = pd.merge(df, db_df, left_on="uuid", right_on="uuid")
+    db_df = df.rename(columns={'uuid': 'person_id','normalized_job_code': 'uuid','dem_education_level': 'ed_level',
+                            'dem_full_time_job': 'job_type',
+                            'question_bbi_2016wave4_basicincome_awareness': 'bi_awareness',
+                            'question_bbi_2016wave4_basicincome_vote': 'bi_vote',
+                            'question_bbi_2016wave4_basicincome_effect': 'bi_effect',
+                            'question_bbi_2016wave4_basicincome_argumentsfor': 'bi_argsfor',
+                            'question_bbi_2016wave4_basicincome_argumentsagainst': 'bi_argsagsagainst'})
+    return db_df
 
-def setup.quandl(api_key:str):
-    print("setting quandl API key")
-    quandl.ApiConfig.api_key=api_key
+#Acquiring data from API
+def get_jobsid(url):
+    print('Calling api!')
+    response = requests.get(url)
+    json_data=response.json()
+    print('Transforming api data into dataframe')
+    api_df = pd.DataFrame(json_data)
+    return api_df
 
-def get_db(path:str):
-    jobs=pd.read_csv(path)
-    ticker_list=companies['Ticker'].to_list()
-    print(f'retrieved{len(ticker_list)}companies...')
-    return ticker_list
+#Acquiring data from Web Scrapping
+def get_web(url):
+    print('Starting to web scrap!')
+    html = requests.get(url).content
+    soup = BeautifulSoup(html, 'lxml')
+    countries = soup.find_all('td')
+    print('Cleaning retrived data')
+    lista = []
+    lista = [i.text for i in countries]
+    cleaned = [i.strip() for i in lista if len(i) > 3]
+    split = 2
+    country_codes = [cleaned[i:i + split] for i in range(0, len(cleaned), split)]
+    print('Transforming web scrapping data into dataframe')
+    country_codes = pd.DataFrame(country_codes)
+    country_codes = country_codes.rename(columns={0: 'country', 1: 'country_code'})
+    country_codes['country_code'] = country_codes['country_code'].str.replace(')', '')
+    country_codes['country_code'] = country_codes['country_code'].str.replace('(', '')
+    return country_codes
 
-def get_prices(ticker):
-    print(f'getting historical stock prices for company: {ticker}')
-    prices_full=quandl.get(f'WIKI/{ticker}')
-    prices_full.to_csv(f'./data/raw/{ticker}.csv')
-    prices=prices_full[['Adj. Close']].reset_index()
-    prices['Ticker']=ticker
-    prices_full.to_csv(f'./data/raw/{ticker}.csv', index=false)
-    return prices
 
-def acquire():
-    data=pd.read_csv('./data/raw/companies.csv')
+def data_df():
+    db_df = get_db(path='home/carmencuadrado/Ironhack/Project-1/data-project-template/data/raw/raw_data_project_m1.db')
+    api_df = get_jobsid(url='http://api.dataatwork.org/v1/jobs?offset=10&limit=5000')
+    web_df = get_web(url = 'https://ec.europa.eu/eurostat/statistics-explained/index.php/Glossary:Country_codes')
+    print('Merging all retrived data')
+    df_1 = pd.merge(db_df, api_df, left_on='uuid', right_on='uuid')
+    df = pd.merge(df_1, web_df, left_on='country_code', right_on='country_code', how='inner')
+    return df
+
 
