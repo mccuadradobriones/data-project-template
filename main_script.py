@@ -12,10 +12,11 @@ def argument_parser():
 
 def main(country):
     print('Starting pipe line')
-    df = m_acquisition.data_df()
-    print(df.shape)
+    df_acq = m_acquisition.data_df()
     print('Cleaning retrieved data!')
+    df_wrang= m_wrangling.wrangle()
     print('Analysing data!')
+    df_analysis=m_analysis.analyze()
     print('Reporting data!')
 
 
