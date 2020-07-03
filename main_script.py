@@ -6,7 +6,7 @@ from p_reporting import m_reporting
 
 def argument_parser():
     parser = argparse.ArgumentParser(description = 'Specify imput db,api key and web url')
-    parser.add_argument("-c", "--country", type = str, dest ='country', help="Specify a country...", required=True)
+    parser.add_argument("-c", "--country", type = str, dest ='country', help="Specify a country...", default='Spain')
     args = parser.parse_args()
     return args
 
@@ -14,9 +14,9 @@ def main(country):
     print('Starting pipe line')
     df_acq = m_acquisition.data_df()
     print('Cleaning retrieved data!')
-    df_wrang= m_wrangling.wrangle()
+    df_wrang= m_wrangling.wrangle(df_acq)
     print('Analysing data!')
-    df_analysis=m_analysis.analyze()
+    df_analysis=m_analysis.analyze(df_wrang)
     print('Reporting data!')
 
 

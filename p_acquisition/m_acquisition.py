@@ -40,6 +40,7 @@ def get_jobsid(url):
     json_data=response.json()
     print('Transforming api data into dataframe')
     api_df = pd.DataFrame(json_data)
+    api_df.rename(columns={'suggestion': 'job_title'})
     return api_df
 
 #Acquiring data from Web Scrapping
