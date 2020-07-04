@@ -1,12 +1,9 @@
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-import re
 from sqlalchemy import inspect, create_engine
-import sqlsoup
 
 
-#acquisition functions
 #Acquiring data from database
 def get_db(path):
     print('Getting database')
@@ -26,8 +23,8 @@ def get_db(path):
                             'question_bbi_2016wave4_basicincome_awareness': 'bi_awareness',
                             'question_bbi_2016wave4_basicincome_vote': 'bi_vote',
                             'question_bbi_2016wave4_basicincome_effect': 'bi_effect',
-                            'question_bbi_2016wave4_basicincome_argumentsfor': 'bi_argsfor',
-                            'question_bbi_2016wave4_basicincome_argumentsagainst': 'bi_argsagsagainst'})
+                            'question_bbi_2016wave4_basicincome_argumentsfor': 'Pro_arguments',
+                            'question_bbi_2016wave4_basicincome_argumentsagainst': 'Con_arguments'})
     print('Cleaning out null values from uuid')
     filtered = db_df.uuid.notnull()
     jobs_db = db_df[filtered]
@@ -60,6 +57,7 @@ def get_web(url):
     country_codes = country_codes.rename(columns={0: 'country', 1: 'country_code'})
     country_codes['country_code'] = country_codes['country_code'].str.replace(')', '')
     country_codes['country_code'] = country_codes['country_code'].str.replace('(', '')
+    country_codes=country_codes.replace({'UK':'GB', 'EL':'GR'})
     return country_codes
 
 
