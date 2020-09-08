@@ -30,15 +30,12 @@ Work-in-progress (Alpha)
  
 
 ### **Core technical concepts and inspiration**
-If you are thinking 
+If you are thinking to work in a data position in Europe, you might want to check how many workers carry out the taks you know how to do and which is their opinion on socioeconomic issues. Definitely, it will give you a sense of who well could you live in that country performing that job!
 
-### :wrench: **Configuration**
-Requeriments, prerequisites, dependencies, installation instructions.
+### **Usage**
+Parameters: Introduce a country have its information retrieved or introduce any other character to have the information for all countries
 
-### :see_no_evil: **Usage**
-Parameters, return values, known issues, thrown errors.
-
-### :file_folder: **Folder structure**
+### **Folder structure**
 ```
 └── project
     ├── __trash__
@@ -48,11 +45,13 @@ Parameters, return values, known issues, thrown errors.
     ├── README.md
     ├── main_script.py
     ├── notebooks
-    │   ├── notebook1.ipynb
-    │   └── notebook2.ipynb
+    │   ├── Acquisition.ipynb
+    │   └── Wrangling.ipynb
     ├── package1
-    │   ├── module1.py
-    │   └── module2.py
+    │   ├── m_acquisition.py
+    │   └── m_wrangling.py
+    │   └── m_analysis.py
+    │   └── m_reporting.py
     └── data
         ├── raw
         ├── processed
@@ -62,7 +61,7 @@ Parameters, return values, known issues, thrown errors.
 > Do not forget to include `__trash__` and `.env` in `.gitignore` 
 
 ### **ToDo**
-Next steps, features planned, known bugs (shortlist).
+As next steps it will be interesting to enrich the data with socioeconomic conditions by country and each data position type demand.
 
 ### **Contact info**
 For further information do not hesitate to contact cuadradobrionescarmen@gmail.com

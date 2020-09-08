@@ -2,7 +2,6 @@ import argparse
 from p_acquisition import m_acquisition
 from p_wrangling import m_wrangling
 from p_analysis import m_analysis
-from p_reporting import m_reporting
 
 def argument_parser():
     parser = argparse.ArgumentParser(description = 'Specify imput db,api key and web url')
@@ -17,7 +16,6 @@ def main(country):
     df_wrang= m_wrangling.wrangle(df_acq)
     print('Analysing data!')
     df_analysis=m_analysis.analyze(df_wrang,country)
-    print('Reporting data!')
 
 if __name__ == '__main__':
     arguments = argument_parser()

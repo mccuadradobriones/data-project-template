@@ -37,7 +37,7 @@ def get_jobsid(url):
     json_data=response.json()
     print('Transforming api data into dataframe')
     api_df = pd.DataFrame(json_data)
-    api_df.rename(columns={'suggestion': 'job_title'})
+    api_df.rename(columns={'normalized_job_title': 'job_title'})
     return api_df
 
 #Acquiring data from Web Scrapping
@@ -54,7 +54,7 @@ def get_web(url):
     country_codes = [cleaned[i:i + split] for i in range(0, len(cleaned), split)]
     print('Transforming web scrapping data into dataframe')
     country_codes = pd.DataFrame(country_codes)
-    country_codes = country_codes.rename(columns={0: 'country', 1: 'country_code'})
+    country_codes = country_codes.rename(columns={0: 'country_name', 1: 'country_code'})
     country_codes['country_code'] = country_codes['country_code'].str.replace(')', '')
     country_codes['country_code'] = country_codes['country_code'].str.replace('(', '')
     country_codes=country_codes.replace({'UK':'GB', 'EL':'GR'})
